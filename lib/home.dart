@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './models/question.dart';
+import 'results.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -8,8 +9,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int selectedIndex = 0;
+  int _selectedIndex = 0;
+  int correctCount = 0;
   double score = 0;
   double _progressValue = 0;
+  bool showResults = false;
 
   List<Question> questions = [
     new Question(text: "Why am doing this?", answers: [
@@ -22,7 +26,21 @@ class _HomeState extends State<Home> {
       new Answer("Yesterday!", false),
       new Answer("Today!", true)
     ]),
-    new Question(text: "Your score", answers: [])
+    new Question(text: "Navidad es en el mes de:", answers: [
+      new Answer("Enero", false),
+      new Answer("Junio", false),
+      new Answer("Diciembre", true)
+    ]),
+    new Question(text: "Cuanto es 2 + 2", answers: [
+      new Answer("-1", false),
+      new Answer("4", true),
+      new Answer("22", false)
+    ]),
+    new Question(text: "HTML es...", answers: [
+      new Answer("Un lenguaje de programacion", false),
+      new Answer("Memoria RAM", false),
+      new Answer("Un lenguaje de etiquetado ", true)
+    ]),
   ];
 
   List<Answer> userAnswers;
@@ -33,20 +51,20 @@ class _HomeState extends State<Home> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
-          "Mateh Quiz!!",
+          "Mateh Quiz!!!",
           style: TextStyle(color: Colors.red[50]),
         ),
         backgroundColor: Colors.redAccent,
       ),
       body: Padding(
         padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
-        child: Container(
+        child: !showResults ? Container(
             child: Column(children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                  '${selectedIndex == questions.length - 1 ? selectedIndex : selectedIndex + 1}/${questions.length - 1} Questions!',
+                  'Preguntas contestadas: ${selectedIndex}/${questions.length }',
                   textAlign: TextAlign.end,
                   style: TextStyle(fontSize: 18.0, letterSpacing: 1.5)),
             ],
@@ -59,39 +77,39 @@ class _HomeState extends State<Home> {
           ),
           SizedBox(height: 100),
           Center(
-            child: Text(this.questions[this.selectedIndex].text,
+            child: Text(this.questions[this._selectedIndex].text,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20.0,
                     letterSpacing: 2.0)),
           ),
           SizedBox(height: 40.0),
-          ...this.questions[this.selectedIndex].answers.map((a) {
+          ...this.questions[this._selectedIndex].answers.map((a) {
             return Column(children: [
               RaisedButton(
                   onPressed: () {
                     setState(() {
                       if (a.correct) {
+                        correctCount++;
                         this.questions[this.selectedIndex].correct = true;
+                        this.score =
+                            (correctCount / (this.questions.length )) * 100;
+
+                        print('score ${score}');
                       }
+                      if(_selectedIndex == questions.length -1){
+                        showResults = true;
+                      }
+
+                      if(selectedIndex != questions.length -1)
+                        _selectedIndex++;
+
                       selectedIndex++;
                       print("$selectedIndex, ${this.questions.length}");
-                      if (selectedIndex <= this.questions.length - 2) {
+                      // if (selectedIndex < this.questions.length ) {
                         this._progressValue =
                             this.selectedIndex / this.questions.length;
-                      } else {
-                        print('elser');
-                        this._progressValue = 100;
-                        int correctCount = 0;
-                        for (var i = 0; i < this.questions.length - 1; i++) {
-                          if (this.questions[i].correct) {
-                            correctCount++;
-                          }
-                        }
-
-                        this.score =
-                            (correctCount / (this.questions.length - 1)) * 100;
-                      }
+                      // }
                     });
                   },
                   color: Colors.grey,
@@ -99,11 +117,18 @@ class _HomeState extends State<Home> {
                       style: TextStyle(color: Colors.white, fontSize: 15)))
             ]);
           }),
-          selectedIndex == questions.length - 1
-              ? Text("$score/100", style: TextStyle(fontSize: 30.0))
-              : Text('')
-        ])),
+        ])) : Results(score, (){
+              setState(() {
+                this.showResults = false;
+                this.score = 0;
+                this._selectedIndex = 0;
+                this.selectedIndex = 0;
+                this.correctCount = 0;
+                this._progressValue = 0;
+              });
+            }
       ),
+      )
     );
   }
 }
