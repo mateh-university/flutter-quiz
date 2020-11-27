@@ -14,6 +14,7 @@ class _HomeState extends State<Home> {
   double score = 0;
   double _progressValue = 0;
   bool showResults = false;
+  bool darkMode = false;
 
   List<Question> questions = [
     new Question(text: "Why am doing this?", answers: [
@@ -47,77 +48,82 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          "Mateh Quiz!!!",
-          style: TextStyle(color: Colors.red[50]),
-        ),
-        backgroundColor: Colors.redAccent,
-      ),
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
-        child: !showResults ? Container(
-            child: Column(children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                  'Preguntas contestadas: ${selectedIndex}/${questions.length }',
-                  textAlign: TextAlign.end,
-                  style: TextStyle(fontSize: 18.0, letterSpacing: 1.5)),
-            ],
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: this.darkMode ? ThemeData.dark() : ThemeData.light(),
+        home: Scaffold(
+          // backgroundColor: Colors.white,
+          appBar: AppBar(
+            title: Text(
+              "Mateh Quiz!!!",
+              style: TextStyle(color: Colors.red[50]),
+            ),
+            backgroundColor: Colors.redAccent,
           ),
-          SizedBox(height: 5.0),
-          LinearProgressIndicator(
-            backgroundColor: Colors.cyanAccent,
-            valueColor: new AlwaysStoppedAnimation<Color>(Colors.red),
-            value: _progressValue,
-          ),
-          SizedBox(height: 100),
-          Center(
-            child: Text(this.questions[this._selectedIndex].text,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
-                    letterSpacing: 2.0)),
-          ),
-          SizedBox(height: 40.0),
-          ...this.questions[this._selectedIndex].answers.map((a) {
-            return Column(children: [
-              RaisedButton(
-                  onPressed: () {
-                    setState(() {
-                      if (a.correct) {
-                        correctCount++;
-                        this.questions[this.selectedIndex].correct = true;
-                        this.score =
-                            (correctCount / (this.questions.length )) * 100;
+          body: Padding(
+            padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
+            child: !showResults ? Container(
+                child: Column(children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        // ignore: unnecessary_brace_in_string_interps
+                          'Preguntas contestadas: ${selectedIndex}/${questions.length }',
+                          textAlign: TextAlign.end,
+                          style: TextStyle(fontSize: 18.0, letterSpacing: 1.5)),
+                    ],
+                  ),
+                  SizedBox(height: 5.0),
+                  LinearProgressIndicator(
+                    backgroundColor: Colors.cyanAccent,
+                    valueColor: new AlwaysStoppedAnimation<Color>(Colors.red),
+                    value: _progressValue,
+                  ),
+                  SizedBox(height: 100),
+                  Center(
+                    child: Text(this.questions[this._selectedIndex].text,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0,
+                            letterSpacing: 2.0)),
+                  ),
+                  SizedBox(height: 40.0),
+                  ...this.questions[this._selectedIndex].answers.map((a) {
+                    return Column(children: [
+                      RaisedButton(
+                          onPressed: () {
+                            setState(() {
+                              if (a.correct) {
+                                correctCount++;
+                                this.questions[this.selectedIndex].correct = true;
+                                this.score =
+                                    (correctCount / (this.questions.length )) * 100;
 
-                        print('score ${score}');
-                      }
-                      if(_selectedIndex == questions.length -1){
-                        showResults = true;
-                      }
+                                // ignore: unnecessary_brace_in_string_interps
+                                print('score ${score}');
+                              }
+                              if(_selectedIndex == questions.length -1){
+                                showResults = true;
+                              }
 
-                      if(selectedIndex != questions.length -1)
-                        _selectedIndex++;
+                              if(selectedIndex != questions.length -1)
+                                _selectedIndex++;
 
-                      selectedIndex++;
-                      print("$selectedIndex, ${this.questions.length}");
-                      // if (selectedIndex < this.questions.length ) {
-                        this._progressValue =
-                            this.selectedIndex / this.questions.length;
-                      // }
-                    });
-                  },
-                  color: Colors.grey,
-                  child: Text(a.text,
-                      style: TextStyle(color: Colors.white, fontSize: 15)))
-            ]);
-          }),
-        ])) : Results(score, (){
+                              selectedIndex++;
+                              print("$selectedIndex, ${this.questions.length}");
+                              // if (selectedIndex < this.questions.length ) {
+                              this._progressValue =
+                                  this.selectedIndex / this.questions.length;
+                              // }
+                            });
+                          },
+                          color: Colors.grey,
+                          child: Text(a.text,
+                              style: TextStyle(color: Colors.white, fontSize: 15)))
+                    ]);
+                  }),
+                ])) : Results(score, (){
               setState(() {
                 this.showResults = false;
                 this.score = 0;
@@ -127,8 +133,25 @@ class _HomeState extends State<Home> {
                 this._progressValue = 0;
               });
             }
-      ),
-      )
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            child: Icon( Icons.autorenew),
+            onPressed: (){
+
+              if (darkMode == false) {
+                setState(() {
+                  darkMode = true;
+                });
+              } else {
+                setState(() {
+                  darkMode = false;
+                });
+              }
+
+            },
+          ),
+        )
     );
   }
 }
