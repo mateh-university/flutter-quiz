@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                             elevation: 7.0,
                             child: GestureDetector(
                               onTap: () {
-                                if (this.email != 'mateh@elismar.com' &&
+                                if (this.email != 'mateh@elismar.com' ||
                                     pass != '1234')
                                   this._showMyDialog();
                                 else

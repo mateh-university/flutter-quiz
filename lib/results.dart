@@ -18,7 +18,7 @@ class Results extends StatelessWidget {
                 Text("Your Score", style: TextStyle(fontSize: 40.0)),
                 Text("$score/100", style: TextStyle(fontSize: 30.0)),
                 SizedBox(height: 150.0),
-                RaisedButton(onPressed: restart, child: Text("Reiniciar"))
+                RaisedButton(onPressed: restart, child: Text("Log out"))
               ],
             ),
           ],)
